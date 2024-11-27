@@ -1,6 +1,9 @@
+import Image from 'next/image'
+
 export default function About() {
   return (
     <>
+    <img src='/images.jpg'/>
       <h2>
         About Us – <span id="Liv_Name">Hackathon Website</span>
       </h2>
@@ -54,7 +57,7 @@ export default function About() {
       </ol>
 
       <h3>Contact Information</h3>
-
+      <Image src='/elephant-2729413_640.jpg' width={1000} height={500} alt='Elephant Picture'/>
       <ul>
         <li>
           <b>Email:</b>

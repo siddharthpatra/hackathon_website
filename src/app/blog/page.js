@@ -1,6 +1,9 @@
+import Image from 'next/image';
+
 export default function Blog() {
   return (
     <>
+      <Image src='/images_blog.jpg' width={1000} height={500} alt='blog image'/>
       <p>
         Amet porttitor eget dolor morbi non arcu risus quis. Et netus et
         malesuada fames ac turpis. Faucibus vitae aliquet nec ullamcorper sit

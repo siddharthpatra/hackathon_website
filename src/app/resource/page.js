@@ -1,6 +1,10 @@
+import Image from 'next/image';
+
+
 export default function Resource() {
   return (
     <>
+      <Image src='/images.png' width={1000} height={500} alt='Resource image'/>
       <p>
         Adipiscing diam donec adipiscing tristique. Arcu non odio euismod
         lacinia at. Purus in mollis nunc sed id. Ornare massa eget egestas purus

@@ -1,6 +1,9 @@
+import Image from 'next/image'
+
 export default function Article() {
   return (
     <>
+      <Image src='/download.jpg' width={1000} height={500} alt='article image'/>
       <p>
         Lectus proin nibh nisl condimentum id venenatis a condimentum vitae.
         Donec ac odio tempor orci dapibus ultrices. Aliquam sem et tortor

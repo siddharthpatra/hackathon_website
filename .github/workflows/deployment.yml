@@ -1,0 +1,41 @@
+name: Deploy to Vercel and Notify API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Deploy to Vercel
+      - name: Deploy to Vercel
+        run: |
+          vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      # Step 3: Get latest deployment information from Vercel
+      - name: Get Latest Vercel Build ID
+        run: |
+          DEPLOYMENT_URL=$(curl -s "https://api.vercel.com/v9/projects/${{ secrets.VERCEL_PROJECT_ID }}/deployments" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            | jq -r '.[0].url')  # Get the latest deployment URL
+
+          # Get the build ID from the deployment details
+          BUILD_ID=$(curl -s "https://api.vercel.com/v9/deployments/${DEPLOYMENT_URL}" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            | jq -r '.uid')  # Assuming build ID is in 'uid' field
+
+          echo "BUILD_ID=$BUILD_ID" >> $GITHUB_ENV
+
+      # Step 4: Trigger your custom API with build ID and sitemap XML URL
+      - name: Trigger API Endpoint
+        run: |
+          curl -X GET "https://sushilkundu143.github.io/webtrendmonitor_backend/publish-build?buildId=${{ env.BUILD_ID }}&sitemapXML=https://example.com/sitemap.xml"

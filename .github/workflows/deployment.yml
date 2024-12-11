@@ -26,7 +26,7 @@ jobs:
         run: |
           DEPLOYMENT_URL=$(curl -s "https://api.vercel.com/v9/projects/${{ secrets.VERCEL_PROJECT_ID }}/deployments" \
             -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            | jq -r '.[0].url')  # Get the latest deployment URL
+            | jq -r '.deployments[0].url')  # Get the latest deployment URL
 
           # Get the build ID from the deployment details
           BUILD_ID=$(curl -s "https://api.vercel.com/v9/deployments/${DEPLOYMENT_URL}" \

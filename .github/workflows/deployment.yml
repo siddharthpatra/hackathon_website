@@ -1,0 +1,46 @@
+name: Get Latest AWS Amplify Build ID
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  get-build-id:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up AWS credentials
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # Replace with your region
+
+      # Step 3: Retrieve the latest build ID from AWS Amplify
+      - name: Get latest build ID
+        run: |
+          # APP_ID="d35psm04bv52q7"      # Replace with your Amplify App ID
+          # BRANCH_NAME="master"                # Replace with your branch name (e.g., 'main', 'develop')
+
+          # List the builds and retrieve the latest build ID
+          BUILD_ID=$(aws amplify list-builds \
+            --app-id d35psm04bv52q7 \
+            --branch-name master \
+            --query 'builds[0].buildId' \
+            --output text)
+
+          echo "Latest build ID: $BUILD_ID"
+
+          # Optionally, you can use this build ID in further steps or for debugging
+          echo "::set-output name=build_id::$BUILD_ID"
+
+      # Step 4: Use the build ID (Optional: You can use it in later steps)
+      - name: Display Build ID (Optional)
+        run: |
+          echo "The latest AWS Amplify build ID is ${{ steps.get-build-id.outputs.build_id }}"

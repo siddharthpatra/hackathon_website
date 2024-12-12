@@ -1,46 +1,41 @@
-name: Get Latest AWS Amplify Build ID
+name: Deploy to Vercel and Notify API
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
-  get-build-id:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the code
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # Step 1: Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      # Step 2: Set up AWS credentials
-      - name: Set up AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1  # Replace with your region
-
-      # Step 3: Retrieve the latest build ID from AWS Amplify
-      - name: Get latest build ID
+      # Step 2: Deploy to Vercel
+      - name: Deploy to Vercel
         run: |
-          # APP_ID="d35psm04bv52q7"      # Replace with your Amplify App ID
-          # BRANCH_NAME="master"                # Replace with your branch name (e.g., 'main', 'develop')
+          vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
-          # List the builds and retrieve the latest build ID
-          BUILD_ID=$(aws amplify list-builds \
-            --app-id d35psm04bv52q7 \
-            --branch-name master \
-            --query 'builds[0].buildId' \
-            --output text)
-
-          echo "Latest build ID: $BUILD_ID"
-
-          # Optionally, you can use this build ID in further steps or for debugging
-          echo "::set-output name=build_id::$BUILD_ID"
-
-      # Step 4: Use the build ID (Optional: You can use it in later steps)
-      - name: Display Build ID (Optional)
+      # Step 3: Get latest deployment information from Vercel
+      - name: Get Latest Vercel Build ID
         run: |
-          echo "The latest AWS Amplify build ID is ${{ steps.get-build-id.outputs.build_id }}"
+          DEPLOYMENT_URL=$(curl -s "https://api.vercel.com/v9/projects/${{ secrets.VERCEL_PROJECT_ID }}/deployments" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            | jq -r '.deployments[0].url')  # Get the latest deployment URL
+
+          # Get the build ID from the deployment details
+          BUILD_ID=$(curl -s "https://api.vercel.com/v9/deployments/${DEPLOYMENT_URL}" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            | jq -r '.uid')  # Assuming build ID is in 'uid' field
+
+          echo "BUILD_ID=$BUILD_ID" >> $GITHUB_ENV
+
+      # Step 4: Trigger your custom API with build ID and sitemap XML URL
+      - name: Trigger API Endpoint
+        run: |
+          curl -X GET "https://sushilkundu143.github.io/webtrendmonitor_backend/publish-build?buildId=${{ env.BUILD_ID }}&sitemapXML=https://example.com/sitemap.xml"

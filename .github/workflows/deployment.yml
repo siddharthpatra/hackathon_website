@@ -25,13 +25,13 @@ jobs:
       # Step 3: Retrieve the latest build ID from AWS Amplify
       - name: Get latest build ID
         run: |
-          APP_ID="d35psm04bv52q7"      # Replace with your Amplify App ID
-          BRANCH_NAME="master"                # Replace with your branch name (e.g., 'main', 'develop')
+          # APP_ID="d35psm04bv52q7"      # Replace with your Amplify App ID
+          # BRANCH_NAME="master"                # Replace with your branch name (e.g., 'main', 'develop')
 
           # List the builds and retrieve the latest build ID
           BUILD_ID=$(aws amplify list-builds \
-            --app-id $APP_ID \
-            --branch-name $BRANCH_NAME \
+            --app-id d35psm04bv52q7 \
+            --branch-name master \
             --query 'builds[0].buildId' \
             --output text)
 

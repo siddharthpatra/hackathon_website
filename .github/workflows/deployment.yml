@@ -3,7 +3,7 @@ name: Get Latest AWS Amplify Build ID
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   get-build-id:

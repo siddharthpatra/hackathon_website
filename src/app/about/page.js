@@ -14,7 +14,7 @@ export default function About() {
         Ajay Singh, a full time software developer, established BlogEarns in
         2021. With over a decade of experience in content creation and online
         monetization, Ajay recognized the need for a platform that empowers
-        bloggers to turn their passion into profit.
+        bloggers to turn their passion into profit. Profitted
       </p>
 
       <h3>Company History</h3>

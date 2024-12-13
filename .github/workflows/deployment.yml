@@ -35,4 +35,4 @@ jobs:
       # Step 4: Trigger your custom API with build ID and sitemap XML URL
       - name: Trigger API Endpoint
         run: |
-          curl -X GET "https://sushilkundu143.github.io/webtrendmonitor_backend/publish-build?buildId=${{ env.BUILD_ID }}&sitemapXML=https://example.com/sitemap.xml"
+          curl -X GET "https://sushilkundu143.github.io/webtrendmonitor_backend/publish-build?buildId=${{ BUILD_ID }}&sitemapXML=https://example.com/sitemap.xml"

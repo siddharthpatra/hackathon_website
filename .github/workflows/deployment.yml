@@ -24,14 +24,11 @@ jobs:
       # Step 3: Get latest deployment information from Vercel
       - name: Get Latest Vercel Build ID
         run: |
-          DEPLOYMENT_URL=$(curl -s "https://api.vercel.com/v9/projects/${{ secrets.VERCEL_PROJECT_ID }}/deployments" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            | jq -r '.deployments[0].url')  # Get the latest deployment URL
+          DEPLOYMENT_URL=$(curl -s "https://api.vercel.com/v9/projects/${{ secrets.VERCEL_PROJECT_ID }}" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" )  # Get the latest deployment URL
 
           # Get the build ID from the deployment details
-          BUILD_ID=$(curl -s "https://api.vercel.com/v9/deployments/${DEPLOYMENT_URL}" \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            | jq -r '.uid')  # Assuming build ID is in 'uid' field
+          BUILD_ID=$(${DEPLOYMENT_URL}.alias[0].id)  # Assuming build ID is in 'uid' field
 
           echo "BUILD_ID=$BUILD_ID" >> $GITHUB_ENV
 
